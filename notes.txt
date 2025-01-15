@@ -1,9 +1,0 @@
-Clubhouse database
-    - Users with full-names (first and last), usernames (emails?), passwords,
-    membership-status. 
-
-    - Messages with title, timestamp, text. Linked to user who created
-
-Sign up form - sanitize and validate form fields. Secure passwords with bcrypt
-    - Add a confirmPassword field, validate using a custom validator 
-    - https://express-validator.github.io/docs/guides/customizing/
