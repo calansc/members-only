@@ -6,8 +6,25 @@
     </head>
     <body>
         <% if (locals.user) {%>
-            <h1> Welcome back <%= user.username %></h1>
-            <a href="/log-out">Log Out</a>
+            <h1> Welcome back <%= user.firstname %></h1>
+            <%- include("errors.ejs") %>
+            <% if (locals.user.member) { %>
+                <h2> You are a member! </h2>
+            <% } else { %>
+                <form action="/member-register" method="GET">
+                    <button>Register as a member</button>
+            </form>
+            <% } %>
+            <% if (locals.user.admin) { %>
+                <h2> You are a admin! </h2>
+            <% } else { %>
+                <form action="/admin-register" method="GET">
+                    <button>Register as a admin</button>
+            </form>
+            <% } %>
+            <form action="/log-out" method="GET">
+                <button>Log Out</button>
+
         <% } else { %>
             <h1> Welcome members and non-members! </h1>
             <form action="/log-in" method="POST">
@@ -18,9 +35,10 @@
                 <button>Log In</button>
             </form>
             <%- include("errors.ejs") %>
+            <form action="/sign-up" method="GET"> 
+                <button>Sign Up</button>
+            </form>
         <% } %>
     </body>
-    <form action="/sign-up" method="GET"> 
-        <button>Sign Up</button>
-    </form>
+
 </html>

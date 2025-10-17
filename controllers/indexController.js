@@ -50,6 +50,31 @@ require("../config/passport.js");
 //   }
 // });
 
+async function postMemberRegister(req, res, next) {
+  try {
+    const memberCode = req.body.memberCode;
+    if (memberCode === process.env.MEMBER_PASSWORD) {
+      console.log("correct member code");
+      await pool.query("UPDATE users SET member = TRUE WHERE id = ($1)", [
+        req.user.id,
+      ]);
+      res.redirect("/");
+    } else {
+      res.render("index", {
+        user: req.user,
+        errors: [{ msg: "Incorrect member code", req }],
+      });
+    }
+  } catch (err) {
+    console.error(err);
+    return next(err);
+  }
+}
+
+async function getMemberRegister(req, res) {
+  res.render("member-register", { user: req.user });
+}
+
 async function login(req, res, next) {
   // call passport?
   console.log("call login", req.body);
@@ -108,4 +133,6 @@ module.exports = {
   logout,
   loginFailure,
   redirectIndex,
+  getMemberRegister,
+  postMemberRegister,
 };

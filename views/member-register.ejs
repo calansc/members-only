@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Member Registration</title>
+    </head>
+    <body>
+        <% if (locals.user) {%>
+            <h1> Please enter the member password, <%= user.firstname %></h1>
+            <% if (locals.user.member) { %>
+                <h1> You are already a member! </h1>
+            <% } else { %>
+                <form action="/member-register" method="POST">
+                    <label for="memberCode">Member Password:</label>
+                    <input id="memberCode" name="memberCode" placeholder="Member Password" type="password" />
+                    <button>Submit Member Password</button>
+                </form>
+                
+            <% } %>
+            <form action="/" method="GET">
+            <button>Return Home</button>
+        <% } else { %>
+            <h1>Please login before trying to become a member.</h1>
+            <form action="/" method="GET">
+                <button>Log In</button>
+            </form>
+        <% } %>
+        <%- include("errors.ejs") %>
+    </body>
+
+</html>

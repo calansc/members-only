@@ -3,6 +3,15 @@ const indexController = require("../controllers/indexController");
 
 const indexRouter = Router();
 
+indexRouter.get("/member-register", (req, res) => {
+  indexController.getMemberRegister(req, res);
+});
+
+indexRouter.post("/member-register", (req, res) => {
+  console.log("post member register");
+  indexController.postMemberRegister(req, res);
+});
+
 indexRouter.post("/log-in", (req, res) => {
   indexController.login(req, res);
 });
