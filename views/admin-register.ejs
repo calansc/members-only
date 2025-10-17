@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Admin Registration</title>
+    </head>
+    <body>
+        <% if (locals.user) {%>
+            <h1> Please enter the admin password, <%= user.firstname %></h1>
+            <% if (locals.user.admin) { %>
+                <h1> You are already a admin! </h1>
+            <% } else { %>
+                <form action="/admin-register" method="POST">
+                    <label for="adminCode">Admin Password:</label>
+                    <input id="adminCode" name="adminCode" placeholder="Admin Password" type="password" />
+                    <button>Submit Admin Password</button>
+                </form>
+            <% } %>
+            <form action="/" method="GET">
+            <button>Return Home</button>
+        <% } else { %>
+            <h1>Please login before trying to become a member.</h1>
+            <form action="/" method="GET">
+                <button>Log In</button>
+            </form>
+        <% } %>
+        <%- include("errors.ejs") %>
+    </body>
+
+</html>

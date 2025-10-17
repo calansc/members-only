@@ -50,6 +50,31 @@ require("../config/passport.js");
 //   }
 // });
 
+async function postAdminRegister(req, res, next) {
+  try {
+    const adminCode = req.body.adminCode;
+    if (adminCode === process.env.ADMIN_PASSWORD) {
+      console.log("correct admin code");
+      await pool.query("UPDATE users SET admin = TRUE WHERE id = ($1)", [
+        req.user.id,
+      ]);
+      res.redirect("/");
+    } else {
+      res.render("index", {
+        user: req.user,
+        errors: [{ msg: "Incorrect admin code", req }],
+      });
+    }
+  } catch (err) {
+    console.error(err);
+    return next(err);
+  }
+}
+
+async function getAdminRegister(req, res) {
+  res.render("admin-register", { user: req.user });
+}
+
 async function postMemberRegister(req, res, next) {
   try {
     const memberCode = req.body.memberCode;
@@ -135,4 +160,6 @@ module.exports = {
   redirectIndex,
   getMemberRegister,
   postMemberRegister,
+  getAdminRegister,
+  postAdminRegister,
 };
