@@ -3,6 +3,11 @@ const indexController = require("../controllers/indexController");
 
 const indexRouter = Router();
 
+indexRouter.post("/new-message", (req, res) => {
+  console.log("post new message route");
+  indexController.postNewMessage(req, res);
+});
+
 indexRouter.get("/admin-register", (req, res) => {
   indexController.getAdminRegister(req, res);
 });

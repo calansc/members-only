@@ -50,6 +50,30 @@ require("../config/passport.js");
 //   }
 // });
 
+async function postNewMessage(req, res, next) {
+  try {
+    const title = req.body.title;
+    const text = req.body.messageText;
+    const userId = req.user.id;
+    console.log("post new message:", title, text, userId);
+
+    const insertMessageQuery =
+      "INSERT INTO messages (title, text, timestamp) VALUES ($1, $2, NOW()) RETURNING id";
+    const messageResult = await pool.query(insertMessageQuery, [title, text]);
+    const messageId = messageResult.rows[0].id;
+    console.log("Inserted message with ID:", messageId);
+
+    const insertUserMessageQuery =
+      "INSERT INTO user_message (userid, messageid) VALUES ($1, $2)";
+    await pool.query(insertUserMessageQuery, [userId, messageId]);
+
+    res.redirect("/");
+  } catch (err) {
+    console.error(err);
+    return next(err);
+  }
+}
+
 async function postAdminRegister(req, res, next) {
   try {
     const adminCode = req.body.adminCode;
@@ -147,7 +171,16 @@ async function signUp(req, res) {
 }
 
 async function index(req, res) {
-  res.render("index", { user: req.user });
+  try {
+    const results = await pool.query(
+      "SELECT * FROM messages ORDER BY timestamp DESC"
+    );
+    const messages = results.rows;
+    res.render("index", { user: req.user, messages: messages });
+  } catch (err) {
+    console.error(err);
+    return next(err);
+  }
 }
 
 module.exports = {
@@ -162,4 +195,5 @@ module.exports = {
   postMemberRegister,
   getAdminRegister,
   postAdminRegister,
+  postNewMessage,
 };

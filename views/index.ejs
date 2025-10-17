@@ -24,7 +24,38 @@
             <% } %>
             <form action="/log-out" method="GET">
                 <button>Log Out</button>
-
+            </form>
+            <h2>Submit a New Message:</h2>
+            <form action="/new-message" method="POST">
+                <label for="title">Title:</label>
+                <input id="title" name="title" placeholder="Message Title" type="text" />
+                <br>
+                <label for="messageText">Message:</label>
+                <textarea id="messageText" name="messageText" placeholder="Your message here..." rows="4" cols="50"></textarea>
+                <br>
+                <button>Submit Message</button>
+            </form>
+            <h2>Message Board:</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <% if (messages.length > 0) { %>
+                            <% Object.keys(messages[0]).forEach(column => { %>
+                                <th><%= column %></th>
+                            <% }); %>
+                        <% } %>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% messages.forEach(row => { %>
+                        <tr>
+                            <% Object.values(row).forEach(value => { %>
+                                <td><%= value %></td>
+                            <% }); %>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
         <% } else { %>
             <h1> Welcome members and non-members! </h1>
             <form action="/log-in" method="POST">
@@ -38,6 +69,27 @@
             <form action="/sign-up" method="GET"> 
                 <button>Sign Up</button>
             </form>
+            <h2>Message Board:</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <% if (messages.length > 0) { %>
+                            <% Object.keys(messages[0]).forEach(column => { %>
+                                <th><%= column %></th>
+                            <% }); %>
+                        <% } %>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% messages.forEach(row => { %>
+                        <tr>
+                            <% Object.values(row).forEach(value => { %>
+                                <td><%= value %></td>
+                            <% }); %>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
         <% } %>
     </body>
 
