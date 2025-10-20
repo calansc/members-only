@@ -9,14 +9,16 @@
             <h1> Welcome back <%= user.firstname %></h1>
             <%- include("errors.ejs") %>
             <% if (locals.user.member) { %>
-                <% messages = member_messages %>
                 <h2> You are a member! </h2>
             <% } else { %>
                 <form action="/member-register" method="GET">
                     <button>Register as a member</button>
             </form>
             <% } %>
-   
+            <% if (locals.user.admin) { %>
+                <% messages.forEach(msg => { %>
+                   <% msg.Delete = 'X' %>
+                <% }); %>
                 <h2> You are a admin! </h2>
             <% } else { %>
                 <form action="/admin-register" method="GET">
@@ -36,27 +38,6 @@
                 <br>
                 <button>Submit Message</button>
             </form>
-            <h2>Message Board:</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <% if (messages.length > 0) { %>
-                            <% Object.keys(messages[0]).forEach(column => { %>
-                                <th><%= column %></th>
-                            <% }); %>
-                        <% } %>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% messages.forEach(row => { %>
-                        <tr>
-                            <% Object.values(row).forEach(value => { %>
-                                <td><%= value %></td>
-                            <% }); %>
-                        </tr>
-                    <% }); %>
-                </tbody>
-            </table>
         <% } else { %>
             <h1> Welcome members and non-members! </h1>
             <form action="/log-in" method="POST">
@@ -70,27 +51,46 @@
             <form action="/sign-up" method="GET"> 
                 <button>Sign Up</button>
             </form>
-            <h2>Message Board:</h2>
+        <% } %>
+        <h2>Message Board:</h2>
+        <% if (messages.length > 0) { %>          
             <table>
-                <thead>
+                <tr>
+                    
+                    <th>Title</th>
+                    <th>Text</th>
+                    <% if (locals.user) { %>
+                    <% if (locals.user.member) { %>
+                        <th>Date</th>
+                        <th>Posted By</th>
+                    <% } %>
+                    <% if (locals.user.admin) { %>
+                        <th>Delete</th>
+                    <% } %>
+                    <% } %>
+                </tr>
+                <tr>
+                <% messages.forEach(row => { %>
                     <tr>
-                        <% if (messages.length > 0) { %>
-                            <% Object.keys(messages[0]).forEach(column => { %>
-                                <th><%= column %></th>
-                            <% }); %>
+                        <td><%= row.title %></td>
+                        <td><%= row.text %></td>
+                        <% if (locals.user) { %>
+                        <% if (locals.user.member) { %>
+                            <td><%= row.posted %></td>
+                            <td><%= row.firstname + ' ' + row.lastname %></td>
+                        <% } %>
+                        <% if (locals.user.admin) { %>
+                            <td>
+                                <form action="/delete/<%= row.id %>" method="POST">
+                                    <input type="submit" value="Delete">
+                                </form>
+                            </td>
+                        <% } %>
                         <% } %>
                     </tr>
-                </thead>
-                <tbody>
-                    <% messages.forEach(row => { %>
-                        <tr>
-                            <% Object.values(row).forEach(value => { %>
-                                <td><%= value %></td>
-                            <% }); %>
-                        </tr>
-                    <% }); %>
-                </tbody>
-            </table>
+                <% }); %>
+                </tr>
+        </table>
         <% } %>
     </body>
 

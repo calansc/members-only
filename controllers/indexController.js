@@ -50,6 +50,22 @@ require("../config/passport.js");
 //   }
 // });
 
+async function deleteMessage(req, res, next) {
+  try {
+    console.log("delete message id:", req.params["messageId"]);
+    await pool.query("DELETE FROM messages WHERE id = ($1)", [
+      req.params["messageId"],
+    ]);
+    await pool.query("DELETE FROM user_message WHERE messageid = ($1)", [
+      req.params["messageId"],
+    ]);
+    res.redirect("/");
+  } catch (err) {
+    console.error(err);
+    return next(err);
+  }
+}
+
 async function postNewMessage(req, res, next) {
   try {
     const title = req.body.title;
@@ -173,19 +189,12 @@ async function signUp(req, res) {
 async function index(req, res) {
   try {
     const results = await pool.query(
-      "SELECT title, text FROM messages ORDER BY timestamp DESC"
+      "SELECT to_char(timestamp, 'Mon DD HH24:MI') AS posted, title, text, messages.id, firstname, lastname FROM messages INNER JOIN user_message ON messages.id = user_message.messageid INNER JOIN users ON user_message.userid = users.id ORDER BY timestamp DESC"
     );
     const messages = results.rows;
-    const member_results = await pool.query(
-      "SELECT to_char(timestamp, 'Mon DD HH24:MI') AS posted, title, text FROM messages ORDER BY timestamp DESC"
-      // id, title, timestamp, text
-      // inner join username
-    );
-    const member_messages = member_results.rows;
     res.render("index", {
       user: req.user,
       messages: messages,
-      member_messages: member_messages,
     });
   } catch (err) {
     console.error(err);
@@ -206,4 +215,5 @@ module.exports = {
   getAdminRegister,
   postAdminRegister,
   postNewMessage,
+  deleteMessage,
 };

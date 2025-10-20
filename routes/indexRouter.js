@@ -3,6 +3,11 @@ const indexController = require("../controllers/indexController");
 
 const indexRouter = Router();
 
+indexRouter.post("/delete/:messageId", (req, res) => {
+  console.log("delete message route");
+  indexController.deleteMessage(req, res);
+});
+
 indexRouter.post("/new-message", (req, res) => {
   console.log("post new message route");
   indexController.postNewMessage(req, res);
