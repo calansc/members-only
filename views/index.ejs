@@ -9,13 +9,14 @@
             <h1> Welcome back <%= user.firstname %></h1>
             <%- include("errors.ejs") %>
             <% if (locals.user.member) { %>
+                <% messages = member_messages %>
                 <h2> You are a member! </h2>
             <% } else { %>
                 <form action="/member-register" method="GET">
                     <button>Register as a member</button>
             </form>
             <% } %>
-            <% if (locals.user.admin) { %>
+   
                 <h2> You are a admin! </h2>
             <% } else { %>
                 <form action="/admin-register" method="GET">

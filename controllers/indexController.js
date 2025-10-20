@@ -173,10 +173,20 @@ async function signUp(req, res) {
 async function index(req, res) {
   try {
     const results = await pool.query(
-      "SELECT * FROM messages ORDER BY timestamp DESC"
+      "SELECT title, text FROM messages ORDER BY timestamp DESC"
     );
     const messages = results.rows;
-    res.render("index", { user: req.user, messages: messages });
+    const member_results = await pool.query(
+      "SELECT to_char(timestamp, 'Mon DD HH24:MI') AS posted, title, text FROM messages ORDER BY timestamp DESC"
+      // id, title, timestamp, text
+      // inner join username
+    );
+    const member_messages = member_results.rows;
+    res.render("index", {
+      user: req.user,
+      messages: messages,
+      member_messages: member_messages,
+    });
   } catch (err) {
     console.error(err);
     return next(err);
